@@ -148,8 +148,8 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // In configureBindings(), add example bindings (e.g., X button to 0°, Y to 120°):
-        //joystick.x().onTrue(wrist.setPositionCommand(0)); // Move to 0 degrees on X button press
-        //joystick.y().onTrue(wrist.setPositionCommand(120)); // Move to 120 degrees on Y button press
+        // joystick.x().onTrue(wrist.setPositionCommand(90)); // Move to 0 degrees on X button press
+        // joystick.y().onTrue(wrist.setPositionCommand(135)); // Move to 120 degrees on Y button press
         joystick.x().onTrue(Commands.parallel(
             wrist.setPositionCommand(90),
             elbow.setPositionCommand(0)
@@ -160,8 +160,10 @@ public class RobotContainer {
             elbow.setPositionCommand(180)
         ));
         // Bind left and right triggers to iris positions (treat as button press when axis > 0.5)
-        joystick.leftTrigger().onTrue(iris.setPositionCommand(0.25)); // Set to 0.25 rotations on left trigger press
-        joystick.rightTrigger().onTrue(iris.setPositionCommand(0.75)); // Set to 0.75 rotations on right trigger press
+        //joystick.leftTrigger().onTrue(iris.setPositionCommand(0.04)); // Set to 0.25 rotations on left trigger press
+        //joystick.rightTrigger().onTrue(iris.setPositionCommand(0.21)); // Set to 0.75 rotations on right trigger press
+        joystick.leftTrigger().onTrue(iris.spinRelativeCommand(-0.5)); // //spins -0.5 rotations on left trigger press
+        joystick.rightTrigger().onTrue(iris.spinRelativeCommand(0.5)); //spins +0.5 rotations on right trigger press
 
 
 // Optionally, set default command to hold current position (but since periodic does that, maybe not needed)

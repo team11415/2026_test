@@ -103,6 +103,15 @@ public double getPositionRotations() {
     return encoder.getPosition();
 }
 
+// New method: Spin the motor by a relative amount (positive for forward, negative for reverse).
+public Command spinRelativeCommand(double deltaRotations) {
+    return runOnce(() -> {
+        // Get current position and add the delta for relative movement.
+        double currentPosition = encoder.getPosition();
+        setTargetPosition(currentPosition + deltaRotations);
+    });
+}
+
 // Check if at target within a tolerance (e.g., 0.01 rotations; tune as needed).
 public boolean isAtPosition(double tolerance) {
     return Math.abs(getPositionRotations() - targetPositionRotations) <= tolerance;
