@@ -1,0 +1,31 @@
+{
+  "Connections": {
+    "open": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT3)",
+    "serverTeam": "11415"
+  },
+  "Persistent Values": {
+    "open": false
+  },
+  "transitory": {
+    "Pose": {
+      "double[]##v_/Pose/robotPose": {
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
+        "double[]##v_/SmartDashboard/Field/Robot": {
+          "open": true
+        }
+      },
+      "open": true
+    },
+    "limelight": {
+      "open": true
+    }
+  }
+}

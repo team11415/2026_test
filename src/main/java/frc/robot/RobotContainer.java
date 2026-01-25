@@ -16,10 +16,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Vision.Limelight;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Wrist;
@@ -70,15 +72,25 @@ public class RobotContainer {
     private final Wrist wrist = new Wrist();
     private final Elbow elbow = new Elbow();
     private final Iris iris = new Iris();
+    public final Limelight limelightA = new Limelight(drivetrain, "limelight-a");
+    public final Limelight limelightB = new Limelight(drivetrain, "limelight-b");
 
         // This is the constructor for RobotContainer. It sets up the auto chooser, puts it on the dashboard, configures button bindings, and warms up PathPlanner to avoid delays.
         public RobotContainer() {
             autoChooser = AutoBuilder.buildAutoChooser("Tests");
             SmartDashboard.putData("Auto Mode", autoChooser);
         
-            configureBindings(); // ✅ wrist already exists
+     configureBindings(); 
+
+     // Enable both Limelights
+    limelightA.useLimelight(true);
+    limelightA.trustLL(true);
+    limelightB.useLimelight(true);
         
-            FollowPathCommand.warmupCommand().schedule();
+    CommandScheduler.getInstance().registerSubsystem(limelightA);
+    CommandScheduler.getInstance().registerSubsystem(limelightB);
+    
+    FollowPathCommand.warmupCommand().schedule();
         }
 
 
