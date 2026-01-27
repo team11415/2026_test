@@ -89,11 +89,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.limelightA.trustLL(true);  // Trust on auto start
+    m_robotContainer.limelightB.trustLL(true);
+    
     m_robotContainer.limelightA.setAlliance(
       DriverStation.getAlliance().orElse(Alliance.Blue)
     );
-        m_robotContainer.limelightB.setAlliance(
-        DriverStation.getAlliance().orElse(Alliance.Blue)
+    m_robotContainer.limelightB.setAlliance(
+      DriverStation.getAlliance().orElse(Alliance.Blue)
     );
     //m_robotContainer.drivetrain.setForwardHeading(Rotation2d.fromDegrees(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red ? 0 : 180));
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -111,6 +114,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.limelightA.trustLL(true);  // Trust on teleop start
+    m_robotContainer.limelightB.trustLL(true);
+    
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
