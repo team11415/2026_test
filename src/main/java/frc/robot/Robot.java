@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -43,7 +44,9 @@ public class Robot extends TimedRobot {
     SignalLogger.start();
 
     limelightaTable = NetworkTableInstance.getDefault().getTable("limelight-a");
-    throttleEntry = limelightaTable.getEntry("throttle_set");
+    limelightbTable = NetworkTableInstance.getDefault().getTable("limelight-b");
+    throttleEntry = limelightaTable.getEntry("throttlea_set");
+    throttleEntry = limelightbTable.getEntry("throttleb_set");
     SmartDashboard.putData("Field", m_field); // Publishes under /SmartDashboard/Field
   }
 
@@ -64,7 +67,16 @@ public class Robot extends TimedRobot {
                   //m_field.setRobotPose(new Pose2d(8.0, 4.0, new Rotation2d()));
     
     SmartDashboard.putString("PoseDebug", m_robotContainer.drivetrain.getState().Pose.toString());
-    
+
+        // After a short delay, switch to strict mode (0.5 second after init)
+    if (DriverStation.isAutonomous() || DriverStation.isTeleop()) {
+        if (DriverStation.getMatchTime() < -0.5) {  // Before match starts
+            // Keep trusting
+        } else if (Timer.getMatchTime() > 0.5) {  // 0.5 seconds into the period
+            m_robotContainer.limelightA.trustLL(false);  // Now be strict
+            m_robotContainer.limelightB.trustLL(false);
+        }
+      }
     //field.getObject("traj").setTrajectory(yourTrajectory); // set a trajectory object
 
     if (DriverStation.isDisabled()) {

@@ -15,44 +15,44 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.Constants.*;
 
-public class Wrist extends SubsystemBase {
-    private final TalonFXS wristMotor;
-    private final CANcoder wristEncoder;
+public class Turret extends SubsystemBase {
+    private final TalonFXS turretMotor;
+    private final CANcoder turretEncoder;
     private final PositionVoltage positionRequest;
 
-    // Current target position in degrees
-    private double targetPositionDegrees = 90.0;
+        // Current target position in degrees
+private double targetPositionDegrees = 90.0;
 
-    public Wrist() {
-        wristMotor = new TalonFXS(kWristMotorId, kCANBus.getName());
-        wristEncoder = new CANcoder(kWristEncoderId, kCANBus.getName());
+ public Turret() {
+        turretMotor = new TalonFXS(kturretMotorId, kCANBus.getName());
+        turretEncoder = new CANcoder(kturretEncoderId, kCANBus.getName());
 
         // Apply encoder config (absolute range is implicit 0–1)
-        wristEncoder.getConfigurator().apply(wristEncoderConfigs);
+        turretEncoder.getConfigurator().apply(turretEncoderConfigs);
 
         // Motor configuration
         TalonFXSConfiguration motorConfig = new TalonFXSConfiguration();        
 
-        motorConfig.ExternalFeedback.FeedbackRemoteSensorID = kWristEncoderId;
+        motorConfig.ExternalFeedback.FeedbackRemoteSensorID = kturretEncoderId;
         motorConfig.ExternalFeedback.ExternalFeedbackSensorSource =
             ExternalFeedbackSensorSourceValue.RemoteCANcoder;
 
-        motorConfig.ExternalFeedback.SensorToMechanismRatio = 1.0;
-        motorConfig.ExternalFeedback.RotorToSensorRatio = kWristGearRatio;
+        motorConfig.ExternalFeedback.SensorToMechanismRatio = 6.66667;
+        motorConfig.ExternalFeedback.RotorToSensorRatio = kturretGearRatio;
 
-        motorConfig.Slot0 = wristPositionGains;
-        motorConfig.CurrentLimits = wristCurrentLimits;
+        motorConfig.Slot0 = turretPositionGains;
+        motorConfig.CurrentLimits = turretCurrentLimits;
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         //Set motor type for Minion
-        motorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        motorConfig.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
 
         // Enable soft limits (motor rotations, post-scaling = mechanism rotations)
         motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kWristMaxPosition.in(Degrees) / 360.0;
-        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kWristMinPosition.in(Degrees) / 360.0;
+        motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kturretMaxPosition.in(Degrees) / 360.0;
+        motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kturretMinPosition.in(Degrees) / 360.0;
 
         // Optional: Voltage compensation for consistent performance
         motorConfig.Voltage.PeakForwardVoltage = 12.0;
@@ -60,45 +60,44 @@ public class Wrist extends SubsystemBase {
         motorConfig.MotorOutput.PeakForwardDutyCycle = 0.10;
         motorConfig.MotorOutput.PeakReverseDutyCycle = -0.10;
 
-        wristMotor.getConfigurator().apply(motorConfig);
+        turretMotor.getConfigurator().apply(motorConfig);
         targetPositionDegrees = getPositionDegrees();
 
         positionRequest = new PositionVoltage(0).withSlot(0);
     }
-
-    public Command setPositionCommand(double degrees) {
+public Command setPositionCommand(double degrees) {
         return runOnce(() -> setTargetPosition(degrees));
     }
-
+    
     private void setTargetPosition(double degrees) {
         // Clamp to safe range
-        targetPositionDegrees = MathUtil.clamp(degrees, kWristMinPosition.in(Degrees), kWristMaxPosition.in(Degrees));
+        targetPositionDegrees = MathUtil.clamp(degrees, kturretMinPosition.in(Degrees), kturretMaxPosition.in(Degrees));
     }
-
+    
     @Override
     public void periodic() {
         // Target in mechanism rotations
         double motorRotations = targetPositionDegrees / 360.0;
 
-        wristMotor.setControl(positionRequest.withPosition(motorRotations));
-        SmartDashboard.putNumber("Wrist Target Degrees", targetPositionDegrees);
-        SmartDashboard.putNumber("Wrist Current Degrees", getPositionDegrees());
+        turretMotor.setControl(positionRequest.withPosition(motorRotations));
+        SmartDashboard.putNumber("Turret Target Degrees", targetPositionDegrees);
+        SmartDashboard.putNumber("Turret Current Degrees", getPositionDegrees());
 
         // Optional debug: current and velocity
-        SmartDashboard.putNumber("Wrist Motor Current", wristMotor.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Wrist Velocity Degrees/Sec", wristMotor.getVelocity().getValueAsDouble() * 360.0);
+        SmartDashboard.putNumber("Turret Motor Current", turretMotor.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Turret Velocity Degrees/Sec", turretMotor.getVelocity().getValueAsDouble() * 360.0);
     }
-
-    // Absolute wrist position in degrees
+    
+    // Absolute turret position in degrees
     public double getPositionDegrees() {
-        return wristMotor.getPosition().getValueAsDouble() * 360.0;
+        return turretMotor.getPosition().getValueAsDouble() * 360.0;
     }
 
     // Check if at target within tolerance
     public boolean isAtPosition(double toleranceDegrees) {
         return Math.abs(getPositionDegrees() - targetPositionDegrees) <= toleranceDegrees;
     }
-
+     
     @Override
     public void simulationPeriodic() {
         // Simulate position change towards target (simple model)
@@ -106,4 +105,5 @@ public class Wrist extends SubsystemBase {
         double delta = (targetPositionDegrees - current) * 0.1; // Simulate movement
         // Update simulated position (in real, use Phoenix sim setup; placeholder for now)
     }
+
 }

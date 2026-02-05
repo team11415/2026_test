@@ -26,6 +26,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Iris;
+import frc.robot.subsystems.Turret;
 
         // This declares a public class called RobotContainer, which holds all the robot's subsystems, commands, and bindings (like button mappings).
 public class RobotContainer {
@@ -84,7 +85,6 @@ public class RobotContainer {
 
      // Enable both Limelights
     limelightA.useLimelight(true);
-    limelightA.trustLL(true);
     limelightB.useLimelight(true);
         
     CommandScheduler.getInstance().registerSubsystem(limelightA);
